@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Nexclap</title>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/ico"
+        href="https://storage.googleapis.com/nexclap-234019.appspot.com/Images%2F66016definedlogo.png" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <div class="center">
+        <section class="py-4 bg-light">
+            <div class="container-fluid px-4">
+                <div class="row">
+                    <div class="col-sm-4 col-lg-2 p-xl-4">
+                        <div class=" gy-4">
+                            <div class="card mb-4 text-center overflow-hidden">
+                                <div class="card-body">
+                                    <img src="https://mdbcdn.b-cdn.net/img/new/avatars/8.webp"
+                                        class="rounded-circle mb-3 object-cover" style="width: 100px; height: 100px;"
+                                        alt="Avatar" />
+                                    <h4 class="mb-2"><strong>{{user.username}}</strong></h4>
+                                    <p class="">{{user.username}} <span class="badge bg-primary text-white">{{user.username}}</span>
+                                    </p>
+                                    <div class="d-flex flex-wrap justify-content-between">
+                                        <p class="mb-0"><strong>{{followerslen}}</strong> followers</p>
+                                        <p class="mb-0"><strong>{{followinglen}}</strong> following</p>
+                                    </div>
+                                </div>
+                                <ul class="list-group list-group-light list-group-flush list-group-small"></ul>
+                                <a class="list-group-item btn btn-outline-info rounded-0 border-top border-bottom-0 border-right-0 border-left-0 w-100"
+                                    href="#" role="button" data-ripple-color="dark">
+                                    View profile
+                                </a>
+                                </ul>
+                            </div>
+                            <div class="card mb-4 d-none d-sm-block">
+                                <div class="card-header px-3 d-flex justify-content-between align-content-center">
+                                    <h5 class="mb-0">New products</h5>
+                                </div>
+                                <ul class="list-group list-group-light list-group-flush list-group-small">
+                                    {% for product in products %}
+                                    <li class="list-group-item px-3">
+                                        <a href="#" class=" text-dark ">
+                                            {{product.title}}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                    <!-- <li class="list-group-item px-3">
+                                        <a href="#" class=" text-dark ">
+                                            Dapibus ac facilisis in
+                                        </a>
+                                    </li>
+                                    <li class="list-group-item px-3">
+                                        <a href="#" class=" text-dark ">
+                                            Vestibulum at eros
+                                        </a>
+                                    </li> -->
+                                    <a class="list-group-item btn btn-outline-info w-100" href="#" role="button"
+                                        data-ripple-color="dark">View all</a>
+                                </ul>
+                            </div>
+                            <div class="card d-none d-sm-block">
+                                <div class="card-header px-3 d-flex justify-content-between ">
+                                    <h5 class="mb-0">New companies</h5>
+                                    <!-- <p class="text-muted mb-0 font-size-sm"><small><a href="#">View all</a></small></p> -->
+                                </div>
+                                <ul class="list-group list-group-light list-group-flush list-group-small">
+                                    {% for company in companies %}
+                                    <li class="list-group-item">
+                                        <a href="#" class="d-flex justify-content-between align-items-center text-dark">
+                                            <div>
+                                                <div class="">{{company.username}}</div>
+                                            </div>
+                                            <span class="badge rounded-pill badge-success">Hiring</span>
+                                        </a>
+                                    </li>
+                                    {%endfor%}
+                                    <!-- <li class="list-group-item">
+                                        <a href="#" class="d-flex justify-content-between align-items-center text-dark">
+                                            <div>
+                                                <div class="">Apple</div>
+                                            </div>
+                                            <span class="badge rounded-pill badge-primary">Onboarding</span>
+                                        </a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <a href="#" class="d-flex justify-content-between align-items-center text-dark">
+                                            <div>
+                                                <div class="">Amazon</div>
+                                            </div>
+                                            <span class="badge rounded-pill badge-warning under">Awaiting</span>
+                                        </a>
+                                    </li> -->
+                                    <a class="list-group-item btn btn-outline-info w-100" href="#" role="button"
+                                        data-ripple-color="dark">View all</a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-7 col-sm-8 p-xl-4">
+                        <div class="">
+                            <div class="d-flex mb-4">
+                                <button type="button" class="btn btn-outline-info btn-lg mr-2 text-left "
+                                    data-mdb-toggle="modal" data-mdb-target="#exampleModal">
+                                    <i class="fas fa-plus mr-1"></i>
+                                    <strong>Create new post</strong>
+                                </button>
+                                <button type="button" id="btnFiltersDropdown"
+                                    class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                    Filters
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" data-toggle="modal" data-target="#exampleModalAdd">Add
+                                        Filters</a>
+                                    <a class="dropdown-item" id="filtertrend" data-toggle="modal"
+                                        data-target="#trendPopup">Trending Content</a>
+                                    <a class="dropdown-item" id="filterLocation" data-toggle="modal"
+                                        data-target="#locationPopup">Trending Locations</a>
+                                    <a class="dropdown-item" href="">Clear Filters</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column" style="gap: 1rem;">
+                            <div class="card p-5">
+                                Post
+                            </div>
+                            <div class="card p-5">
+                                Post
+                            </div>
+                            <div class="card p-5">
+                                Post
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-2 d-none d-lg-block p-xl-4">
+
+                        <div class="card">
+                            <div class="card-header px-3">
+                                <h5 class="mb-0">Announcements</h5>
+                            </div>
+                            <ul class="list-group list-group-light list-group-flush">
+                                {% for announcement in announcements%}
+                                <li class="list-group-item">
+                                    <h6 class="fw-bold">{{announcement.title}}</h5>
+                                    <p class="text-muted mb-0">
+                                        {{announcement.text}}
+                                    </p>
+                                    <p class="text-muted mb-2 fw-bold"><small>{{announcement.date|dateformat("%Y-%m-%d")}}</small></p>
+                                </li>
+                                {%endfor%}
+                                <!-- <li class="list-group-item">
+                                    <h6 class="fw-bold">First customer</h5>
+                                    <p class="text-muted mb-0">
+                                        Some placeholder content in a paragraph relating to "First customer". And some
+                                        more content,
+                                        used here just to pad out and fill this tab panel...
+                                    </p>
+                                    <p class="text-muted mb-2 fw-bold"><small>19 March 2020</small></p>
+                                </li>
+                                <li class="list-group-item">
+                                    <h6 class="fw-bold">Our team exceeds 10 people</h5>
+                                    <p class="text-muted mb-0">
+                                        Some placeholder content in a paragraph relating to "Our team exceeds 10
+                                        people". And some more
+                                        content, used here just to pad out and fill this tab panel...
+                                    </p>
+                                    <p class="text-muted mb-2 fw-bold"><small>24 June 2020</small></p>
+                                </li> -->
+                                <a class="list-group-item btn btn-outline-info w-100" href="#" role="button"
+                                    data-ripple-color="dark">
+                                    View all
+                                </a>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>

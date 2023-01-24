@@ -6,13 +6,13 @@ from flask_migrate import Migrate
 from sqlalchemy.sql import func
 from datetime import datetime
 
+
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] ='postgresql://postgres:123456@localhost:5432/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-
-
 
 class User(db.Model):
 
@@ -23,6 +23,7 @@ class User(db.Model):
     email = db.Column(db.String(64), unique=True, index=True)
     username = db.Column(db.String(64), index=True)
     categoryuse = db.Column(db.String(100), default="individual")
+    date = db.Column(db.DateTime, nullable=False, default=datetime.now)
     urlid = db.Column(db.String(64), index = True, unique = True, nullable = True)
     following = db.relationship(
         'User', lambda: user_following,
@@ -31,6 +32,7 @@ class User(db.Model):
         backref='followers'
     )
     products=db.relationship("Product")
+    announcements=db.relationship("Announcement")
 
     def __init__(self, id,urlid,username,followers=[]):
         self.id=id
@@ -55,6 +57,20 @@ class Product(db.Model):
     def __repr__(self):
         return f"Post Id: {self.id} --- Date: {self.date} --- Title: {self.title}"
 
+class Announcement(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(64), db.ForeignKey('users.urlid'))
+    date = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    category = db.Column(db.String(400), nullable=False)
+    text = db.Column(db.Text, nullable=False)
+    title=db.Column(db.String(400), nullable=False)
+    def __init__(self, id,title, text,category):
+        self.id =id
+        self.title = title
+        self.text = text
+        self.category=category
+    def __repr__(self):
+        return f"Announcement Id: {self.id} --- Date: {self.date} --- Title: {self.title}"
 ## this will create an association table called user_following
 user_following = db.Table(
     'user_following', db.metadata,
@@ -114,11 +130,17 @@ def query():
 
 @app.route("/add")
 def add():
-    u2 = User(12,12,username='jacob1')
-    u3 = User(13,13,username='james2')
-    u4 = User(14,14,username='victor3')
-    u1 = User(15,15,username='david4', followers=[u2, u3, u4])
-    db.session.add_all([u1,u2,u3,u4])
+    a1 = Announcement(1,"Hiring!!",text="Our company is hiring!",category="Hiring")
+    a2 = Announcement(2,"First customer!!",text="Some placeholder content in a paragraph relating to First customer.",category="Hiring")
+    a3 = Announcement(3,"Our team exceeds 10 people",text="Some placeholder content in a paragraph relating to Our team exceeds 10 people",category="Hiring")
+    a4 = Announcement(4,"News!",text="I am extending an invitation to you all to come to the first general meeting of DILF Club this semester! ",category="Hiring")
+    company1=User.query.filter_by(id=100).first()
+    company1.announcements.append(a1)
+    company1.announcements.append(a2)
+    company2=User.query.filter_by(id=101).first()
+    company2.announcements.append(a3)
+    company2.announcements.append(a4)
+    db.session.add_all([company1,company2])
     db.session.commit()
     return "1"
 
@@ -149,4 +171,21 @@ def addproduct():
         categories.add(p.category)
     print(categories)
     return render_template('products2.html', most_recent=most_recent,company=target_company, products=products,categories=categories)
-    
+
+
+
+@app.route('/portfolio', methods=['GET','POST'])
+def findPortfolio():
+    target_id=request.args.get("id")
+    user=User.query.filter_by(id=target_id).first()
+    followers=user.followers
+    following=user.following
+    companies = User.query.filter_by(categoryuse="organization").order_by(User.date.desc()).limit(3).all()
+    products=Product.query.order_by(Product.date.desc()).limit(3).all()
+    announcements=Announcement.query.order_by(Announcement.date.desc()).limit(3).all()
+    return render_template('homefeed.html', user=user,companies=companies, followerslen=len(followers),followinglen=len(following),
+                            products=products, announcements=announcements)
+
+@app.template_filter("dateformat")
+def dateformat(value, format="%Y-%m-%d"):
+    return value.strftime(format)
