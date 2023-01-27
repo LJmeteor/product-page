@@ -5,14 +5,24 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy.sql import func
 from datetime import datetime
-
+from flask_mail import Mail, Message
+from flask_socketio import SocketIO, send
 
 
 app = Flask(__name__)
+app.config['SECRET_KEY']='mysecret'
 app.config['SQLALCHEMY_DATABASE_URI'] ='postgresql://postgres:123456@localhost:5432/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'nexclap_support@nexclap.com'
+app.config['MAIL_PASSWORD'] = 'nexsupportclapDotcom'
+
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+mail = Mail(app)
+socketio=SocketIO(app)
 
 class User(db.Model):
 
@@ -186,6 +196,57 @@ def findPortfolio():
     return render_template('homefeed.html', user=user,companies=companies, followerslen=len(followers),followinglen=len(following),
                             products=products, announcements=announcements)
 
+
+@app.route('/sendEmail', methods=['GET','POST'])
+def sendEmail():
+    # emailTo = request.form.get('companyId')
+    # emailToIndividual=True
+    body="This is an email campaign"
+    # if emailToIndividual:
+    #     userList= User.query.filter_by(categoryuse="individual").order_by(User.date.desc()).all()
+        
+    # else:
+    #     usersList=User.query.filter_by(categoryuse="organization").order_by(User.date.desc()).all()
+    # for user in userList:
+    #     send_email_campaign(user,body)
+    user=User.query.filter_by(id=1).first()
+    send_email_campaign(user,body)
+    return "success"
+        
+
+def send_email_campaign(user, body):
+    msg = Message('New Campagin',
+                  sender='nexclap_support@nexclap.com',
+                  recipients=[user.email])
+    msg.body = body
+    mail.send(msg)
+
+@app.route('/chatroom')
+def chatRoom():
+    return render_template('chat.html')
+
+
+
+@app.route('/test', methods=['GET','POST'])
+def test():
+    if request.method == 'POST':
+        emailToIndividual = request.form.get('emailToIndividual')
+        emailContent = request.form.get('emailContent')
+        emailTitle = request.form.get('emailTitle')
+        return (emailTitle+emailContent+emailToIndividual)
+    return  render_template ("email_campaign.html")
+
+
 @app.template_filter("dateformat")
 def dateformat(value, format="%Y-%m-%d"):
     return value.strftime(format)
+
+@socketio.on('message')
+def handleMessage(msg):
+    print('Message:'+ msg)
+    send(msg,broadcast=True)
+
+
+
+if __name__=='__main__':
+    socketio.run(app)

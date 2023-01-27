@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+<meta charset="UTF-8">
+Email campaign
+</head>
+
+<body>
+
+    <form action="{{ url_for('test') }}" method="post">
+        Email title:<br>
+       <input type="text" name="emailTitle">
+       <br>
+        Email content:<br>
+       <input type="text" name="emailContent">
+       <br>
+        Is this for student or company:<br>
+       <input type="text" name="emailToIndividual">
+       <br>
+       <input type="submit" value="submit">
+       </form> 
+
+</body>
+
+
+
+</html>
