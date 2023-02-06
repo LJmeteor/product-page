@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Nexclap</title>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/ico"
+        href="https://storage.googleapis.com/nexclap-234019.appspot.com/Images%2F66016definedlogo.png" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <div class="center">
+        <section class="py-4 bg-light">
+            <div class="container-fluid px-4">
+                <div class="row">
+                    <div class="col-md-3 col-sm-2 d-none d-lg-block p-xl-4">
+
+                        <div class="card">
+                            <div class="card-header px-3">
+                                <h5 class="mb-0">Joblist</h5>
+                            </div>
+                            <ul class="list-group list-group-light list-group-flush">
+                                {% for job in jobList%}
+                                <li class="list-group-item">
+                                    <h6 class="fw-bold">{{job.title}}</h5>
+                                    <p class="text-muted mb-0">
+                                        {{job.jb_desc}}
+                                    </p>
+                                    <p class="text-muted mb-2 fw-bold"><small>{{job.date|dateformat("%Y-%m-%d")}}</small></p>
+                                    <p class="text-muted mb-2 fw-bold"><small>{{job.category}}</small></p>
+                                </li>
+                                {%endfor%}
+                                <!-- <li class="list-group-item">
+                                    <h6 class="fw-bold">First customer</h5>
+                                    <p class="text-muted mb-0">
+                                        Some placeholder content in a paragraph relating to "First customer". And some
+                                        more content,
+                                        used here just to pad out and fill this tab panel...
+                                    </p>
+                                    <p class="text-muted mb-2 fw-bold"><small>19 March 2020</small></p>
+                                </li>
+                                <li class="list-group-item">
+                                    <h6 class="fw-bold">Our team exceeds 10 people</h5>
+                                    <p class="text-muted mb-0">
+                                        Some placeholder content in a paragraph relating to "Our team exceeds 10
+                                        people". And some more
+                                        content, used here just to pad out and fill this tab panel...
+                                    </p>
+                                    <p class="text-muted mb-2 fw-bold"><small>24 June 2020</small></p>
+                                </li> -->
+                                <a class="list-group-item btn btn-outline-info w-100" href="#" role="button"
+                                    data-ripple-color="dark">
+                                    View all
+                                </a>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>

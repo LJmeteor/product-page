@@ -20,14 +20,51 @@
        socket.on('message',function(msg){
         $('#messages').append('<li>' + msg+'</li>')
        });
+        
 
+
+        $('form#joinRoom').submit(function (event){
+            socket.emit('joinRoom', {
+            room:$('#roomNum').val()
+            })
+            return false
+        });
+        
+
+        socket.on("roomJoined", function (msg, cb) {
+           $('#messages').append('<li>' + msg.user + '  has joined room' + msg.room + '</li>')
+        });
+
+
+        socket.on("roomLeft", function (msg, cb) {
+        $('#messages').append('<li>' + msg.user + '  has left room' + msg.room + '</li>')
+        });
+
+        socket.on("roomLeftPersonal", function (msg, cb) {
+        $('#messages').append('<li>' + ' You have left room' + msg.room + '</li>')
+         });
+
+
+
+        $('#leave_room').on('click', function (){
+        socket.emit('leaveRoom', {
+           room: $('#roomNum').val()
+            });
+        });
 
        $('#sendbutton').on('click',function(){
         socket.send($('#myMessage').val());
         $('#myMessage').val('');
-       });
-     });
+            });
+        });
     </script>
+    <h3>Join Room</h3>
+        <form id="joinRoom" method="POST" action="#">
+            <label>Room Num</label>
+            <input type="text" id="roomNum" required>
+            <input type="submit" id="submitRoomNum" name="Join the room">
+        </form>
+        <button id="leave_room">Leave</button>
     <ul id="messages"></ul>
     <input type="text" id="myMessage">
     <button id="sendbutton">Send</button>

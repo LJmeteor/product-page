@@ -2,11 +2,12 @@
 import os
 from flask import Flask, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import and_
 from flask_migrate import Migrate
 from sqlalchemy.sql import func
 from datetime import datetime
 from flask_mail import Mail, Message
-from flask_socketio import SocketIO, send
+from flask_socketio import SocketIO, send, emit, join_room, leave_room
 
 
 app = Flask(__name__)
@@ -35,6 +36,7 @@ class User(db.Model):
     categoryuse = db.Column(db.String(100), default="individual")
     date = db.Column(db.DateTime, nullable=False, default=datetime.now)
     urlid = db.Column(db.String(64), index = True, unique = True, nullable = True)
+    job_status= db.Column(db.String(400), nullable=False)
     following = db.relationship(
         'User', lambda: user_following,
         primaryjoin=lambda: User.id == user_following.c.user_id,
@@ -43,6 +45,7 @@ class User(db.Model):
     )
     products=db.relationship("Product")
     announcements=db.relationship("Announcement")
+    jobs=db.relationship("Job")
 
     def __init__(self, id,urlid,username,followers=[]):
         self.id=id
@@ -81,6 +84,23 @@ class Announcement(db.Model):
         self.category=category
     def __repr__(self):
         return f"Announcement Id: {self.id} --- Date: {self.date} --- Title: {self.title}"
+
+
+class Job(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(64), db.ForeignKey('users.urlid'))
+    date = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    category = db.Column(db.String(400), nullable=False)
+    jb_desc = db.Column(db.Text, nullable=False)
+    title=db.Column(db.String(400), nullable=False)
+    def __init__(self, id,title, jb_desc,category):
+        self.id =id
+        self.title = title
+        self.jb_desc = jb_desc
+        self.category=category
+    def __repr__(self):
+        return f"Job Id: {self.id} --- Date: {self.date} --- Title: {self.title}"
+
 ## this will create an association table called user_following
 user_following = db.Table(
     'user_following', db.metadata,
@@ -98,24 +118,15 @@ def home():
 @app.route("/do")
 def do():
     db.create_all()
-    tom=User(1,"1","tom")
-    flask=User(2,"2","flask")
-    off=User(3,"3","off")
-    PS=User(4,"4","PS")
-    sub=User(5,"5","sub")
-    qew=User(6,"6","qew")
-    Jan=User(7,"7","Jan")
-    db.session.add(tom)
-    db.session.commit()
-    db.session.add(flask)
-    db.session.commit()
-    db.session.add(off)
-    db.session.commit()
-    db.session.add(PS)
-    db.session.commit()
-    db.session.add(sub)
-    db.session.commit()
-    db.session.add(qew)
+    j1=Job(1,"SDE-Backend","this is the job description for backend","Hiring")
+    j2=Job(2,"SDE-Frontend","this is the job decsription for frontend","Onboarding")
+    j3=Job(3,"Data Analyst","this is the job decsription forData Analyst","Hiring")
+    j4=Job(4,"UI design","this is the job decsription for UI design","Awaiting")
+    company1=User.query.filter_by(id=100).first()
+    company1.jobs.append(j1)
+    company1.jobs.append(j2)
+    company1.jobs.append(j3)
+    company1.jobs.append(j4)
     db.session.commit()
     # result=db.session.add_all([tom, flask, off,PS,sub,qew,Jan])
     return "sucess"
@@ -214,11 +225,11 @@ def sendEmail():
     return "success"
         
 
-def send_email_campaign(user, body):
-    msg = Message('New Campagin',
+def send_email_campaign(email, announcment):
+    msg = Message(announcment.title,
                   sender='nexclap_support@nexclap.com',
-                  recipients=[user.email])
-    msg.body = body
+                  recipients=[email])
+    msg.body = announcment.text
     mail.send(msg)
 
 @app.route('/chatroom')
@@ -237,6 +248,46 @@ def test():
     return  render_template ("email_campaign.html")
 
 
+
+@app.route('/announcements',methods=['GET','POST'])
+def test1():
+    if request.method=="POST":
+        title = request.form.get('title')
+        message = request.form.get('message')
+        default_nexclap = request.form.get('default_nexclap')
+        emailPreferenceRadio = request.form.get('emailPreferenceRadio')
+        a1 = Announcement(106,title,text=message,category="Hiring")      
+        if default_nexclap=="nexclap":
+            user=User.query.filter_by(id=100).first()
+            user.announcements.append(a1)
+            db.session.add(user)
+            db.session.commit()
+        selected_emails=""
+        if emailPreferenceRadio=="email-select":
+            selected_emails=request.form.get('selected-emails')
+            emailList=selected_emails.split(',')
+            for email in emailList:
+                send_email_campaign(email,a1)
+        elif emailPreferenceRadio=="email-all":
+            userList= User.query.filter_by(categoryuse="individual").order_by(User.date.desc()).all()
+            for user in userList:
+                send_email_campaign(user.email,a1)
+        
+        return "1"
+    else:
+        announcements=Announcement.query.order_by(Announcement.date.desc()).all()
+    return render_template("announcements.html",announcements=announcements)
+
+@app.route('/queryJob')
+def queryJob():
+    # get company id and its job_status to query the jobs
+    target_id=request.args.get("id")
+    user=User.query.filter_by(id=target_id).first()
+    job_status=request.args.get("job_status")
+    jobList=Job.query.filter(and_(Job.category==job_status,Job.user_id==target_id))
+    return render_template("test.html",jobList=jobList)
+
+
 @app.template_filter("dateformat")
 def dateformat(value, format="%Y-%m-%d"):
     return value.strftime(format)
@@ -244,9 +295,22 @@ def dateformat(value, format="%Y-%m-%d"):
 @socketio.on('message')
 def handleMessage(msg):
     print('Message:'+ msg)
-    send(msg,broadcast=True)
+    # send(msg,broadcast=True)
 
+@socketio.event
+def joinRoom(message):
+    print(message)
+    join_room(message['room'])
+    emit("roomJoined", {
+        "user": request.sid,
+        "room" : message['room']
+    }, to=message['room'])
 
+@socketio.event
+def leaveRoom(message):
+    emit('roomLeftPersonal', {'room':message['room'], 'user':request.sid})
+    leave_room(message['room'])
+    emit('roomLeft', {'room': message['room'], 'user': request.sid}, to = message['room'])
 
 if __name__=='__main__':
     socketio.run(app)

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Nexclap</title>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/ico"
+        href="https://storage.googleapis.com/nexclap-234019.appspot.com/Images%2F66016definedlogo.png" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<!-- 
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script> -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.2/ace.js" type="text/javascript"
+        charset="utf-8"></script>
+
+    <style type="text/css" media="screen">
+        a:hover {
+            text-decoration: none
+        }
+    </style>
+</head>
+
+<body>
+    <script type="text/javascript">
+    function submit(){
+        var flag=confirm('confirm the submission?');
+        $.ajax({
+            method:"post",
+            data:$('#form_table').serialize(),
+            url:"{{url_for('test1')}}",
+            success:function(data){
+                if(data==1){
+                    alert("success!!!!!")
+                    window.parent.location.reload();
+                }
+            }
+        })
+
+    }
+
+
+
+
+    </script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <div class="center">
+        <section class="py-5 bg-success text-white mb-4">
+            <div class="container">
+                <div>
+                    <h1>Announcements</h1>
+                    <p class="lead">Communications from the Siliconvalley4u team</p>
+                    
+                    <button type="button" class="btn btn-light" data-toggle="modal" data-target="#exampleModal">
+                        Create announcement
+                    </button>
+                        
+                    <div class=" text-dark ">
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Create announcement</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="form_table">
+                                        <div class="form-group">
+                                          <label for="title" class="col-form-label">Title:</label>
+                                          <input type="text" class="form-control" id="title" name="title">
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="message" class="col-form-label">Message:</label>
+                                          <textarea class="form-control" id="message" name="message"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="default_nexclap" value="nexclap" id="flexCheckChecked" checked>
+                                                <label class="form-check-label" for="flexCheckChecked">
+                                                Send as a Nexclap announcement
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="emailPreferenceRadio" id="email-none" value="email-none" checked>
+                                                <label class="form-check-label" for="email-none">
+                                                Email no one
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="emailPreferenceRadio" id="email-all" value="email-all">
+                                                <label class="form-check-label" for="email-all">
+                                                Email everyone
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="emailPreferenceRadio" id="email-select" value="email-select">
+                                                <label class="form-check-label" for="email-select">
+                                                Email select users
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" id="email-recipients" style="display: none;">
+                                            <label for="recipients" class="col-form-label">Recipients:</label>
+                                            <input type="text" class="form-control" id="recipients" name="selected-emails",placeholder="Enter emails, comma seperated">
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" onclick="submit()">Save changes</button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-4">
+            <div class="container">
+                <div class="d-flex flex-column">
+                    {% for announcement in announcements%}
+                    <div class="card mb-4">
+                        <h6 class="card-header">{{announcement.title}}</h6>
+                        <div class="card-body">
+                            <p class="mb-2">
+                                {{announcement.text}}
+                            </p>
+                            <p class="text-muted mb-0 fw-bold"><small>{{announcement.date|dateformat("%Y-%m-%d")}}</small></p>
+                        </div>
+                    </div>
+                    {%endfor%}
+                </div>
+        </section>
+    </div>
+</body>
+
+<script>
+
+    $('input[type=radio][name=emailPreferenceRadio]').change(function() {
+        switch ($(this).val()) {
+            case 'email-select':
+                $('#email-recipients').show()
+                break;
+            default:
+                $('#email-recipients').hide()
+                break;
+        }
+    });
+</script>
+
+</html>
